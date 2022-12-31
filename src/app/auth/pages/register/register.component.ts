@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -14,12 +15,17 @@ export class RegisterComponent {
     password: ['1234546', [Validators.required, Validators.minLength(6)]],
   });
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {}
 
   registro() {
-    console.log(this.miFormulario.value);
-    // console.log(this.miFormulario.valid);
+    const { name, email, password } = this.miFormulario.value;
 
-    this.router.navigateByUrl('/dashboard');
+    this.authService.registro(name, email, password).subscribe((ok) => {
+      if (ok === true) {
+        this.router.navigateByUrl('/dashboard');
+      } else {
+        window.alert(ok);
+      }
+    });
   }
 }
